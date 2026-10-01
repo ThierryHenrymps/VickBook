@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VickBooks — sua biblioteca digital pessoal.">
+  <title>VickBooks — Sua biblioteca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="#">
+      <span class="brand-mark">V</span>
+      <span>Vick<span>Books</span></span>
+    </a>
+
+    <nav class="nav">
+      <a class="active" href="#inicio">Início</a>
+      <a href="#biblioteca">Biblioteca</a>
+      <a href="#favoritos">Favoritos</a>
+    </nav>
+
+    <button class="icon-btn mobile-menu" id="menuBtn" aria-label="Abrir menu">☰</button>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-content">
+        <div class="eyebrow"><span></span> SUA BIBLIOTECA DIGITAL</div>
+        <h1>Um cantinho para<br><em>todas as suas histórias.</em></h1>
+        <p>Encontre seus livros, descubra novas histórias e leve sua biblioteca com você.</p>
+
+        <div class="hero-actions">
+          <a href="#biblioteca" class="btn primary">Explorar biblioteca <span>→</span></a>
+          <a href="#favoritos" class="btn secondary">♡ Favoritos</a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="book-stack">
+          <div class="book book-back"></div>
+          <div class="book book-middle"></div>
+          <div class="book book-front">
+            <div class="book-cover">
+              <span class="cover-small">VICKBOOKS</span>
+              <strong>Histórias<br>para guardar</strong>
+              <span class="cover-line"></span>
+              <small>uma biblioteca feita para você</small>
+            </div>
+          </div>
+        </div>
+        <span class="floating-heart">♡</span>
+        <span class="floating-star">✦</span>
+      </div>
+    </section>
+
+    <section class="section" id="biblioteca">
+      <div class="section-heading">
+        <div>
+          <span class="section-label">COLEÇÃO</span>
+          <h2>Minha biblioteca</h2>
+        </div>
+        <div class="search-wrap">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Buscar livro ou autor..." aria-label="Buscar livro ou autor">
+        </div>
+      </div>
+
+      <div class="category-row" id="categories">
+        <button class="category active" data-category="Todos">Todos</button>
+        <button class="category" data-category="Romance">Romance</button>
+        <button class="category" data-category="Dark Romance">Dark Romance</button>
+        <button class="category" data-category="Fantasia">Fantasia</button>
+        <button class="category" data-category="Mistério">Mistério</button>
+        <button class="category" data-category="Ficção">Ficção</button>
+      </div>
+
+      <div class="book-grid" id="bookGrid"></div>
+      <div class="empty-state" id="emptyState">
+        <div>⌕</div>
+        <h3>Nenhum livro encontrado</h3>
+        <p>Tente outro título, autor ou categoria.</p>
+      </div>
+    </section>
+
+    <section class="quote-section">
+      <div class="quote-mark">“</div>
+      <blockquote>
+        Uma casa sem livros é como um corpo sem alma.
+      </blockquote>
+      <p>— Marco Túlio Cícero</p>
+    </section>
+
+    <section class="section favorites-section" id="favoritos">
+      <div class="section-heading">
+        <div>
+          <span class="section-label">PARA LER DEPOIS</span>
+          <h2>Seus favoritos</h2>
+        </div>
+      </div>
+      <div class="favorite-message" id="favoriteMessage">
+        <span>♡</span>
+        <div>
+          <h3>Seus favoritos aparecerão aqui</h3>
+          <p>Clique no coração de um livro para guardá-lo nesta coleção.</p>
+        </div>
+      </div>
+      <div class="book-grid" id="favoriteGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">Vick<span>Books</span></div>
+    <p>Feito para guardar histórias especiais.</p>
+    <span class="footer-heart">♡</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
