@@ -1,0 +1,110 @@
+# ==============================
+# Java / Maven
+# ==============================
+
+target/
+*.class
+*.jar
+*.war
+
+.mvn/wrapper/maven-wrapper.jar
+
+# ==============================
+# Spring Boot - configuracoes locais
+# ==============================
+
+application-local.properties
+application-local.yml
+application-local.yaml
+
+# Arquivos de configuracao que podem conter senhas
+application.properties
+application.yaml
+application.yml
+
+# ==============================
+# Banco de dados
+# ==============================
+
+*.sql
+*.db
+*.sqlite
+*.sqlite3
+
+# ==============================
+# IDEs
+# ==============================
+
+.idea/
+*.iml
+*.iws
+*.ipr
+
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.example.json
+
+.nb-gradle/
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.springBeans
+.sts4-cache
+
+# ==============================
+# Sistema operacional
+# ==============================
+
+.DS_Store
+Thumbs.db
+
+# ==============================
+# Variaveis de ambiente
+# ==============================
+
+.env
+.env.*
+!.env.example
+
+# ==============================
+# Logs
+# ==============================
+
+*.log
+logs/
+
+# ==============================
+# Arquivos temporarios
+# ==============================
+
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# ==============================
+# Seguranca / chaves
+# ==============================
+
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+secrets.json
+
+# ==============================
+# Arquivos pessoais
+# ==============================
+
+*.bak
+*.backup
