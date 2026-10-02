@@ -23,6 +23,8 @@
       <a href="#favoritos">Favoritos</a>
     </nav>
 
+    <a class="login-btn" id="loginButton" href="login.html">Entrar</a>
+
     <button class="icon-btn mobile-menu" id="menuBtn" aria-label="Abrir menu">☰</button>
   </header>
 
@@ -120,5 +122,19 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    const loginButton = document.getElementById("loginButton");
+    const loggedUser = localStorage.getItem("vickbooks-user");
+    if (loginButton && localStorage.getItem("vickbooks-token")) {
+      loginButton.textContent = loggedUser ? `Sair (${loggedUser})` : "Sair";
+      loginButton.href = "#";
+      loginButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        localStorage.removeItem("vickbooks-token");
+        localStorage.removeItem("vickbooks-user");
+        window.location.reload();
+      });
+    }
+  </script>
 </body>
 </html>

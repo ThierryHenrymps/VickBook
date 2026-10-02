@@ -15,12 +15,29 @@ const categories = document.querySelectorAll(".category");
 const menuBtn = document.getElementById("menuBtn");
 const nav = document.querySelector(".nav");
 
+function getToken() {
+  return localStorage.getItem("vickbooks-token");
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function loadBooks() {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {
+      headers: authHeaders()
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      localStorage.removeItem("vickbooks-token");
+      localStorage.removeItem("vickbooks-user");
+      throw new Error("Sua sessao expirou. Faca login novamente.");
+    }
 
     if (!response.ok) {
-      throw new Error(`Erro na requisição: ${response.status}`);
+      throw new Error(`Erro na requisicao: ${response.status}`);
     }
 
     books = await response.json();
@@ -30,6 +47,11 @@ async function loadBooks() {
     renderFavorites();
   } catch (error) {
     console.error("Erro ao carregar livros:", error);
+    if (emptyState) {
+      emptyState.style.display = "block";
+      emptyState.querySelector("h3").textContent = "Nao foi possivel carregar os livros";
+      emptyState.querySelector("p").textContent = error.message;
+    }
   }
 }
 
@@ -44,7 +66,7 @@ function createBookCard(book) {
   if (book.capa) {
     const nomeArquivo = book.capa.replace(/^.*[\\\/]/, "").trim();
     if (nomeArquivo) {
-      imagemUrl = `${IMAGE_URL}/${nomeArquivo}`;
+      imagemUrl = `${IMAGE_URL}/${encodeURIComponent(nomeArquivo)}`;
     }
   }
 
@@ -53,39 +75,26 @@ function createBookCard(book) {
       <div class="cover" style="width: 100%; height: 260px; overflow: hidden; background-color: #eee; position: relative;">
         ${
           imagemUrl
-            ? `<img 
-                 src="${imagemUrl}" 
-                 alt="Capa de ${book.titulo}" 
-                 style="width: 100%; height: 100%; object-fit: cover; display: block;"
-               />`
+            ? `<img src="${imagemUrl}" alt="Capa de ${escapeHtml(book.titulo)}" style="width: 100%; height: 100%; object-fit: cover; display: block;" />`
             : `<div class="cover-inner" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 12px;">
                  <small>VICKBOOKS</small>
-                 <strong>${book.titulo}</strong>
-                 <small>${book.categoria}</small>
+                 <strong>${escapeHtml(book.titulo)}</strong>
+                 <small>${escapeHtml(book.categoria || "")}</small>
                </div>`
         }
       </div>
 
       <div class="card-body">
-        <div class="card-category">${book.categoria}</div>
-        <h3 class="card-title">${book.titulo}</h3>
-        <p class="card-author">${book.autor}</p>
+        <div class="card-category">${escapeHtml(book.categoria || "Livro")}</div>
+        <h3 class="card-title">${escapeHtml(book.titulo || "Sem titulo")}</h3>
+        <p class="card-author">${escapeHtml(book.autor || "Autor desconhecido")}</p>
 
         <div class="card-footer">
-          <button
-            class="read-btn"
-            type="button"
-            onclick="downloadBook(${book.id})"
-          >
+          <button class="read-btn" type="button" onclick="downloadBook(${book.id})">
             Baixar livro →
           </button>
 
-          <button
-            class="favorite-btn ${isFavorite ? "active" : ""}"
-            type="button"
-            aria-label="Favoritar ${book.titulo}"
-            onclick="toggleFavorite(${book.id})"
-          >
+          <button class="favorite-btn ${isFavorite ? "active" : ""}" type="button" aria-label="Favoritar ${escapeHtml(book.titulo)}" onclick="toggleFavorite(${book.id})">
             ${isFavorite ? "♥" : "♡"}
           </button>
         </div>
@@ -94,17 +103,23 @@ function createBookCard(book) {
   `;
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function getFilteredBooks() {
   const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
   return books.filter(book => {
-    const matchesCategory =
-      activeCategory === "Todos" || book.categoria === activeCategory;
-
-    const matchesSearch =
-      !query ||
-      book.titulo.toLowerCase().includes(query) ||
-      book.autor.toLowerCase().includes(query);
+    const matchesCategory = activeCategory === "Todos" || book.categoria === activeCategory;
+    const titulo = String(book.titulo || "").toLowerCase();
+    const autor = String(book.autor || "").toLowerCase();
+    const matchesSearch = !query || titulo.includes(query) || autor.includes(query);
 
     return matchesCategory && matchesSearch;
   });
@@ -144,8 +159,35 @@ function toggleFavorite(id) {
   renderFavorites();
 }
 
-function downloadBook(id) {
-  window.location.href = `${API_URL}/${id}/download`;
+async function downloadBook(id) {
+  try {
+    const response = await fetch(`${API_URL}/${id}/download`, {
+      headers: authHeaders()
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      alert("Faca login para baixar o livro.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(`Erro ao baixar: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "livro.epub";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error(error);
+    alert("Nao foi possivel baixar o livro.");
+  }
 }
 
 if (searchInput) {

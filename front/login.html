@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Entrar na sua conta VickBooks.">
+  <title>VickBooks — Entrar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+  <div class="login-background" aria-hidden="true">
+    <span class="login-orb orb-one"></span>
+    <span class="login-orb orb-two"></span>
+    <span class="login-spark spark-one">✦</span>
+    <span class="login-spark spark-two">♡</span>
+  </div>
+
+  <header class="login-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">V</span>
+      <span>Vick<span>Books</span></span>
+    </a>
+    <a class="back-home" href="index.html">← Voltar para a biblioteca</a>
+  </header>
+
+  <main class="login-main">
+    <section class="login-card" aria-labelledby="loginTitle">
+      <div class="login-logo">V</div>
+      <span class="login-kicker">SUA BIBLIOTECA DIGITAL</span>
+      <h1 id="loginTitle">Bem-vindo de volta.</h1>
+      <p class="login-subtitle">Entre na sua conta para continuar suas leituras.</p>
+
+      <form class="login-form" id="loginForm">
+        <div class="login-field">
+          <label for="login">Login</label>
+          <div class="login-input-wrap">
+            <span class="field-icon">@</span>
+            <input id="login" name="login" type="text" placeholder="Digite seu login" autocomplete="username" required>
+          </div>
+        </div>
+
+        <div class="login-field">
+          <div class="password-label">
+            <label for="senha">Senha</label>
+          </div>
+          <div class="login-input-wrap">
+            <span class="field-icon">●</span>
+            <input id="senha" name="senha" type="password" placeholder="Digite sua senha" autocomplete="current-password" required>
+            <button type="button" class="show-password" id="showPassword" aria-label="Mostrar senha">◉</button>
+          </div>
+        </div>
+
+        <button class="login-submit" id="loginSubmit" type="submit">
+          <span>Entrar na minha conta</span>
+          <strong>→</strong>
+        </button>
+
+        <p class="login-message" id="loginMessage" aria-live="polite"></p>
+      </form>
+
+      <div class="login-divider"><span>VickBooks</span></div>
+      <p class="login-footer-text">Guarde suas histórias favoritas em um só lugar.</p>
+    </section>
+  </main>
+
+  <script>
+    const BASE_URL = "http://localhost:8080";
+    const form = document.getElementById("loginForm");
+    const message = document.getElementById("loginMessage");
+    const submitButton = document.getElementById("loginSubmit");
+    const senhaInput = document.getElementById("senha");
+    const showPassword = document.getElementById("showPassword");
+
+    showPassword.addEventListener("click", () => {
+      const visible = senhaInput.type === "text";
+      senhaInput.type = visible ? "password" : "text";
+      showPassword.textContent = visible ? "◉" : "◌";
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const login = document.getElementById("login").value.trim();
+      const senha = senhaInput.value;
+
+      if (!login || !senha) {
+        message.className = "login-message error";
+        message.textContent = "Preencha o login e a senha.";
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.classList.add("loading");
+      submitButton.querySelector("span").textContent = "Entrando...";
+      message.className = "login-message";
+      message.textContent = "";
+
+      try {
+        const response = await fetch(`${BASE_URL}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ login, senha })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.message || "Login ou senha incorretos.");
+        }
+
+        const token = data.token || data.accessToken || data.access_token;
+
+        if (!token) {
+          throw new Error("A API nao retornou um token de acesso.");
+        }
+
+        localStorage.setItem("vickbooks-token", token);
+        localStorage.setItem("vickbooks-user", login);
+
+        message.className = "login-message success";
+        message.textContent = "Login realizado! Abrindo sua biblioteca...";
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 500);
+      } catch (error) {
+        console.error("Erro no login:", error);
+        message.className = "login-message error";
+        message.textContent = error.message || "Nao foi possivel entrar. Verifique a API.";
+        submitButton.disabled = false;
+        submitButton.classList.remove("loading");
+        submitButton.querySelector("span").textContent = "Entrar na minha conta";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -68,6 +68,7 @@ public class ControllerLivro {
     
     @GetMapping("/favoritos")
     public ResponseEntity<List<Livro>> getFavoritos(){
+
         return ResponseEntity.ok(service.getFavoritos());
     }
     
