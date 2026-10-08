@@ -37,7 +37,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
                 req.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                 req.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
                 req.requestMatchers(HttpMethod.GET, "/api/v1/livros/**").permitAll();
-                req.requestMatchers(HttpMethod.GET, "/capas/**").permitAll();
+                req.requestMatchers("/capas/**").permitAll();
                 req.anyRequest().authenticated();
             })
 

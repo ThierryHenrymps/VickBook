@@ -31,7 +31,10 @@ public class SecurityFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        if (request.getServletPath().equals("/auth/login")) {
+        String path = request.getServletPath();
+
+        // Rotas públicas
+        if (path.equals("/auth/login") || path.startsWith("/capas/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -41,6 +44,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (tokenJWT != null) {
 
             try {
+
                 var login = tokenService.getSubject(tokenJWT);
 
                 var usuarioOptional = rep.findByLogin(login);
@@ -60,6 +64,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                 }
 
             } catch (Exception e) {
+
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
