@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://vickbooks-api.onrender.com";
 const API_URL = `${BASE_URL}/api/v1/livros`;
 const IMAGE_URL = `${BASE_URL}/capas`;
 
