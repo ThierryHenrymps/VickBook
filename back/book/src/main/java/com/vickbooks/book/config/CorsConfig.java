@@ -16,7 +16,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
+                        .allowedOrigins("https://vickbook.vercel.app")
                         .allowedMethods(
                                 "GET", "POST", "PUT", "DELETE","OPTIONS"
                         )
