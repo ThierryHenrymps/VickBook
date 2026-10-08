@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY pom.xml .
 COPY src ./src
+COPY livros ./livros
 
 RUN apt-get update && apt-get install -y maven && mvn clean package -DskipTests
 
