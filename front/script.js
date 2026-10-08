@@ -63,12 +63,15 @@ function createBookCard(book) {
   const isFavorite = favorites.includes(book.id);
 
   let imagemUrl = null;
+
   if (book.capa) {
-    const nomeArquivo = book.capa.replace(/^.*[\\\/]/, "").trim();
+    const nomeArquivo = book.capa.split(/[\\\/]/).pop().trim();
+
     if (nomeArquivo) {
       imagemUrl = `${IMAGE_URL}/${encodeURIComponent(nomeArquivo)}`;
     }
   }
+
 
   return `
     <article class="book-card">
@@ -134,6 +137,7 @@ function renderBooks() {
   if (emptyState) {
     emptyState.style.display = filtered.length ? "none" : "block";
   }
+  
 }
 
 function renderFavorites() {
