@@ -17,11 +17,6 @@ application-local.properties
 application-local.yml
 application-local.yaml
 
-# Arquivos de configuracao que podem conter senhas
-application.properties
-application.yaml
-application.yml
-
 # ==============================
 # Banco de dados
 # ==============================
